@@ -417,6 +417,14 @@ def _array_parallel(fn, cls, genelist, chunksize=250, processes=1, **kwargs):
             chunks,
             itertools.repeat(kwargs)))
 
+    # results = map(
+    #     _array_star,
+    #     zip(
+    #         itertools.repeat(fn),
+    #         itertools.repeat(cls),
+    #         chunks,
+    #         itertools.repeat(kwargs)))
+
     pool.close()
     pool.join()
     return results
@@ -475,7 +483,17 @@ def _array(fn, cls, genelist, **kwargs):
     for gene in genelist:
         if not isinstance(gene, (list, tuple)):
             gene = [gene]
-        coverage_x, coverage_y = _local_coverage_func(
-            reader, gene, **kwargs)
+
+        try:
+            coverage_x, coverage_y = _local_coverage_func(
+                reader,
+                gene,
+                **kwargs)
+
+        except Exception as e:
+            print("Exception with locus {1}: {0}. skipping...".format(
+                e, gene))
+            coverage_y = np.zeros(shape=kwargs['bins'])
+
         biglist.append(coverage_y)
     return biglist

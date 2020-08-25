@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-import helpers
+from  metaseq import helpers
 from metaseq.helpers import data_dir, example_filename
 from metaseq._genomic_signal import genomic_signal
 from metaseq import plotutils
